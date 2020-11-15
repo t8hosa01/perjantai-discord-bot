@@ -31,9 +31,40 @@ client.on("message", async (message) => {
         }
 
         const dispatcher = connection.play(ytdl('https://www.youtube.com/watch?v=BRhzdxslZSY'))
-        .on('finish', () =>{
+        .on('finish', () => {
             voiceChannel.leave();
         })
+    }
+
+    if(message.content.startsWith(`${prefix}pasinperjantai`)) {
+        const voiceChannel = message.member.voice.channel;
+        if(!voiceChannel) return message.channel.send("Et oo voice channelilla");
+
+        try {
+            var connection = await voiceChannel.join();
+        } catch (error) {
+            console.log(error);
+            return message.channel.send("Jotain meni hänekseen nyt");
+        }
+
+        const dispatcher = connection.play(ytdl('https://www.youtube.com/watch?v=76yIAQcmj9Y'))
+        .on('finish', () => {
+            voiceChannel.leave();
+        })
+    }
+
+    if(message.content.startsWith(`${prefix}komennot`)) {
+        const newEmbed = new Discord.MessageEmbed()
+        .setColor('#304281')
+        .setTitle('Komennot')
+        .setDescription('Tässä Perjantai Botin komennot')
+        .addFields(
+            {name: '!perjantai', value: 'Soittaa perjantaibiisin'},
+            {name: '!pasinperjantai', value: 'Soittaa pasin perjantaivideon'}
+        )
+        .setImage('https://static.luolasto.org/file/varavarasto/38215/tiedosto.jpg')
+
+        message.channel.send(newEmbed);
     }
  
 });
