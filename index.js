@@ -3,7 +3,9 @@ const client = new Discord.Client();
 
 const ytdl = require('ytdl-core');
 
-const token = 'Nzc3NTU2MzM4NDcyNjQ4NzU1.X7FJxQ.MTGqcDMzvI5xKgaUMmLIYhBPLgA'
+const fs = require('fs');
+
+const token = 'Nzc3NTU2MzM4NDcyNjQ4NzU1.X7FJxQ.wMjnXJeN8JuCSxw-6aT4qPFcd10'
 
 client.login(token);
 
@@ -12,6 +14,8 @@ client.once('ready', () => {
 })
 
 const prefix = '!';
+
+const talkedRecently = new Set();
 
 client.on("message", async (message) => {
     if(message.author.bot) return;
@@ -23,48 +27,38 @@ client.on("message", async (message) => {
         const voiceChannel = message.member.voice.channel;
         if(!voiceChannel) return message.channel.send("Et oo voice channelilla");
 
-        try {
-            var connection = await voiceChannel.join();
-        } catch (error) {
-            console.log(error);
-            return message.channel.send("Jotain meni hänekseen nyt");
+        if (talkedRecently.has(message.author.id)) {
+            message.channel.send('Sul on cooldown');
+        } else {
+            try {
+                var connection = await voiceChannel.join();
+            } catch (error) {
+                console.log(error);
+            }
+    
+            const dispatcher = connection.play('./biisi.mp3')
+            .on('finish', () => {
+                voiceChannel.leave();
+            })
+            .on('error', error => {
+                console.log(error);
+            })
+            dispatcher.setVolumeLogarithmic(5 / 5);
+
+            talkedRecently.add(message.author.id);
+            setTimeout(() => {
+                talkedRecently.delete(message.author.id);
+            }, 60000);
         }
 
-        const dispatcher = connection.play(ytdl('https://www.youtube.com/watch?v=BRhzdxslZSY'))
-        .on('finish', () => {
-            voiceChannel.leave();
-        })
+    } else if (message.content.startsWith(`${prefix}lopeta`)) {
+        if(!message.member.voice.channel) return message.channel.send('Sun pitää olla voice kannul että voit stoppaa musan');
+        message.member.voice.channel.leave();
+        return undefined;
     }
 
-    if(message.content.startsWith(`${prefix}pasinperjantai`)) {
-        const voiceChannel = message.member.voice.channel;
-        if(!voiceChannel) return message.channel.send("Et oo voice channelilla");
-
-        try {
-            var connection = await voiceChannel.join();
-        } catch (error) {
-            console.log(error);
-            return message.channel.send("Jotain meni hänekseen nyt");
-        }
-
-        const dispatcher = connection.play(ytdl('https://www.youtube.com/watch?v=76yIAQcmj9Y'))
-        .on('finish', () => {
-            voiceChannel.leave();
-        })
-    }
-
-    if(message.content.startsWith(`${prefix}komennot`)) {
-        const newEmbed = new Discord.MessageEmbed()
-        .setColor('#304281')
-        .setTitle('Komennot')
-        .setDescription('Tässä Perjantai Botin komennot')
-        .addFields(
-            {name: '!perjantai', value: 'Soittaa perjantaibiisin'},
-            {name: '!pasinperjantai', value: 'Soittaa pasin perjantaivideon'}
-        )
-        .setImage('https://static.luolasto.org/file/varavarasto/38215/tiedosto.jpg')
-
-        message.channel.send(newEmbed);
+    if(message.content.startsWith(`${prefix}entajuu`)) {
+        message.channel.send('https://static.luolasto.org/file/varavarasto/38215/tiedosto.jpg')
     }
  
 });
