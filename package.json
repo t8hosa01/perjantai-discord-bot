@@ -9,6 +9,14 @@
   "author": "Samuli Hölttä",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^12.4.1"
+    "@discordjs/opus": "^0.3.3",
+    "discord-player": "^3.0.2",
+    "discord.js": "^12.4.1",
+    "merge-options": "^3.0.3",
+    "node-fetch": "^2.6.1",
+    "opusscript": "0.0.7",
+    "spotify-url-info": "^2.2.0",
+    "ytdl-core": "^4.0.4",
+    "ytsr": "^1.0.4"
   }
 }
