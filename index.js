@@ -1,15 +1,15 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
+require('dotenv').config();
+
 const queue = new Map();
 
 const ytdl = require('ytdl-core');
 
 const fs = require('fs');
 
-const token = 'Nzc3NTU2MzM4NDcyNjQ4NzU1.X7FJxQ.wMjnXJeN8JuCSxw-6aT4qPFcd10'
-
-client.login(token);
+client.login(process.env.BOT_TOKEN);
 
 client.once('ready', () => {
     console.log('Perjantai Bot is online!')
