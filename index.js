@@ -77,7 +77,7 @@ client.on("message", async (message) => {
     }
 
     function play(guild, song) {
-        const serverQueue = queue.set(guild.id);
+        const serverQueue = queue.get(guild.id);
     
         if(!song) {
             serverQueue.voiceChannel.leave();
@@ -86,19 +86,19 @@ client.on("message", async (message) => {
         }
     
         const dispatcher = serverQueue.connection.play(song)
-            .on('finish', () => {
-                serverQueue.songs.shift();
-                play(guild, serverQueue.songs[0]);
-            })
-            .on('error', error => {
-                console.log(error);
-            })
-            dispatcher.setVolumeLogarithmic(5 / 5);
+        .on('finish', () => {
+            serverQueue.songs.shift();
+            play(guild, serverQueue.songs[0]);
+        })
+        .on('error', error => {
+            console.log(error);
+        })
+        dispatcher.setVolumeLogarithmic(5 / 5);
     
-            talkedRecently.add(message.author.id);
-            setTimeout(() => {
-                talkedRecently.delete(message.author.id);
-            }, 60000);
+        talkedRecently.add(message.author.id);
+        setTimeout(() => {
+            talkedRecently.delete(message.author.id);
+        }, 1000);
     }
  
 });
