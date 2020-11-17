@@ -98,7 +98,7 @@ client.on("message", async (message) => {
         talkedRecently.add(message.author.id);
         setTimeout(() => {
             talkedRecently.delete(message.author.id);
-        }, 1000);
+        }, 60000);
     }
  
 });
